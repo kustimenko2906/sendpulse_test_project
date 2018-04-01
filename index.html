@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet">
+
+    <link rel="stylesheet" href="build/css/styles.css">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+
+    <script src="build/js/bootstrap.js"></script>
+    <script src="build/js/main.js"></script>
+
+    <title>Dashboard</title>
+</head>
+<body>
+
+<div id="app" class="not-loaded" :class="{loaded: loaded}">
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header no-border">
+                    <h5 class="modal-title" id="exampleModalLabel">Add social profile</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>URL</label>
+                        <input type="text" v-model="socUrl" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>User name</label>
+                        <input type="text" v-model="userName" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Network name</label>
+                        <input type="text" v-model="socName" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer no-border">
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"
+                            @click="resetForm()">Close
+                    </button>
+                    <button type="button" class="btn btn-success btn-sm" @click.prevent="addNetwork()"
+                            :disabled="!isValid">Add network</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="block-theme-navbar navbar col-lg-12 col-12 d-flex flex-row">
+        <div class="logo-wrapper d-flex align-items-center justify-content-center">
+            <a href="/">
+                <img src="src/images/logo.png" alt="logo">
+            </a>
+        </div>
+
+        <div class="navbar-menu-wrapper d-flex align-items-stretch">
+            <ul>
+                <li>
+                    <a href="#" class="navbar-notification">
+                        <span class="message-count">2</span>
+                    </a>
+                </li>
+                <li>
+                    <div class="block-navbar-search">
+                        <button class="search"></button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container-fluid p-0 d-flex flex-lg-row block-page-wrapper">
+        <div class="block-left-sidebar">
+            <div class="inner-sidebar">
+
+                <div class="block-sidebar-avatar d-table">
+                    <div class="d-table-cell align-middle">
+                        <img src="src/images/users/avatar.png" class="img-fluid" alt="">
+                    </div>
+                    <div class="d-table-cell align-middle">
+                        <a href="#" class="user-name">Abhisek Das</a>
+                        <div class="followers">10,968 Followers</div>
+                    </div>
+                </div>
+
+                <ul class="block-sidebar-nav">
+                    <li>
+                        <a href="#" class="active">
+                            <img src="src/images/icons/dashboards.svg" alt="">
+                            Dashboard
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="#">
+                            <img src="src/images/icons/feed.svg" alt="">
+                            Social Feed
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="#">
+                            <img src="src/images/icons/friend.svg" alt="">
+                            Invite Friends
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="#">
+                            <img src="src/images/icons/setting.svg" alt="">
+                            Settings
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="#">
+                            <img src="src/images/icons/logout.svg" alt="">
+                            Log out
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
+
+            <div class="sidebar-footer text-center">
+                <a href="#">About</a>
+                <a href="#">Terms</a>
+                <a href="#">Privacy</a>
+                <a href="#">Help</a>
+                <a href="#">Report</a>
+            </div>
+        </div>
+
+        <div class="block-main-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12 block-page-head">
+
+                        <div class="d-flex justify-content-between mb-3">
+                            <h2 class="text-success block-main-title">@abhisek.das</h2>
+
+                            <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#exampleModal">+ Add social profile</button>
+                        </div>
+
+                        <ul class="nav nav-tabs mb-3 block-page-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#">Last day</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Week</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Month</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="block-soc-accounts-list">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6 col-lg-3" v-for="(soc, i) in socArr" :key="i">
+                            <div class="block-account-thumbs">
+                                <div class="top" :class="soc.type">
+                                    <img class="soc-icon" :src="'src/images/icons/'+soc.img"
+                                         alt="">
+                                    <div class="number">{{soc.folowers}}</div>
+                                    <span class="small-description">followers</span>
+
+                                    <div class="bottom-cont up" :v-if="soc.latest.length>0">{{soc.latest}}</div>
+                                </div>
+                                <div class="user-info d-table">
+                                    <div class="d-table-cell align-middle">
+                                        <a href="#"><img :src="'src/images/users/'+soc.avatar" alt=""></a>
+                                    </div>
+                                    <div class="d-table-cell align-middle">
+                                        <div class="soc-name">{{soc.type}}</div>
+                                        <div class="user-name">{{soc.user}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        mounted() {
+            this.initApp()
+        },
+        methods: {
+            initApp(){
+                this.loaded = true;
+            },
+            addNetwork() {
+                var item = {
+                    "type": "",
+                    "folowers": "",
+                    "user": "",
+                    "latest": "",
+                    "img": "",
+                };
+
+                item.type = this.socName.toLowerCase();
+                item.folowers = this.getRandomArbitrary(10, 5000);
+                item.user = this.userName;
+                item.latest = '+'+this.getRandomArbitrary(1,10);
+                item.img = this.getSocImage(this.socName);
+
+                console.log(item);
+
+                this.socArr.push(item);
+
+                this.resetForm();
+
+                $('#exampleModal').modal('hide')
+            },
+             getRandomArbitrary(min, max) {
+                return  Math.floor(Math.random() * (max - min)) + min;
+            },
+            getSocImage(typeSting){
+                var type = typeSting.toLowerCase();
+
+                if(type === 'facebook') {
+                    return 'facebook.svg'
+                } else if (type === 'twitter') {
+                    return 'twitter.svg'
+                } else if (type === 'youtube') {
+                    return 'youtube.svg'
+                } else if (type === 'linkedin') {
+                    return 'linkedin.svg'
+                } else if (type === 'instagram') {
+                    return 'instagram.svg'
+                } else {
+                    return 'earth.svg'
+                }
+            },
+            resetForm() {
+                this.userName = '';
+                this.socUrl = '';
+                this.socName = '';
+            },
+        },
+        computed: {
+            isValid() {
+                return this.userName != '' && this.socName != '' && this.socUrl != '';
+            }
+        },
+        data: {
+            loaded: false,
+            socName: '',
+            socUrl: '',
+            userName: '',
+            socArr: [
+                {
+                    "type": "facebook",
+                    "folowers": "1200",
+                    "user": "@kostya",
+                    "latest": "+4",
+                    "img": "facebook.svg",
+                    "avatar": "001.png"
+                },
+                {
+                    "type": "twitter",
+                    "folowers": "1300",
+                    "user": "@kostya",
+                    "latest": "+4",
+                    "img": "twitter.svg",
+                    "avatar": "002.png"
+                },
+                {
+                    "type": "instagram",
+                    "folowers": "1400",
+                    "user": "@kostya",
+                    "latest": "+30",
+                    "img": "instagram.svg",
+                    "avatar": "003.png"
+                },
+                {
+                    "type": "linkedin",
+                    "folowers": "1500",
+                    "user": "@kostya",
+                    "latest": "+1",
+                    "img": "linkedin.svg",
+                    "avatar": "001.png"
+                },
+                {
+                    "type": "youtube",
+                    "folowers": "1500",
+                    "user": "@kostya",
+                    "latest": "+12",
+                    "img": "youtube.svg",
+                    "avatar": "004.png"
+                },
+                {
+                    "type": "snapchat",
+                    "folowers": "8700",
+                    "user": "@abhisekd",
+                    "latest": "+1",
+                    "img": "snapchat.svg",
+                    "avatar": "002.png"
+                },
+                {
+                    "type": "google",
+                    "folowers": "1033",
+                    "user": "@+AbhisekDas",
+                    "latest": "",
+                    "img": "google+.svg",
+                    "avatar": "003.png"
+                },
+                {
+                    "type": "vine",
+                    "folowers": "1045",
+                    "user": "@1316139228245221376",
+                    "latest": "+3",
+                    "img": "vine.svg",
+                    "avatar": "001.png"
+                }
+            ],
+
+        }
+    })
+</script>
+</body>
+</html>
